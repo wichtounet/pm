@@ -11,7 +11,7 @@ def is_git_project(dirname):
     else:
         return False
 
-def list_projects():
+def list_projects(all=False):
     home = os.path.expanduser('~')
     devdir = os.path.join(home, 'dev')
 
@@ -19,7 +19,7 @@ def list_projects():
 
     for f in os.listdir(devdir):
         path = os.path.join(devdir, f)
-        if os.path.isdir(path) and is_git_project(path):
+        if os.path.isdir(path) and (all or is_git_project(path)):
             projects.append(os.path.basename(path))
 
     return projects
