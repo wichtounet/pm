@@ -1,19 +1,22 @@
 import argparse
 import os
 import pm
+import sys
 
-from pm.projects import list_projects, dev_directory
+from pm.projects import dev_directory
+
 
 def build_parser():
     parser = argparse.ArgumentParser(description='')
 
-    parser.add_argument('--version', 
-                        action = 'version',
-                        version = '%(prog)s ' + pm.VERSION)
+    parser.add_argument('--version',
+                        action='version',
+                        version='%(prog)s ' + pm.VERSION)
 
     parser.add_argument('directory')
-    
+
     return parser
+
 
 def main(args=None):
     # Parse command line

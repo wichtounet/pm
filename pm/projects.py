@@ -1,11 +1,12 @@
 import os
-import sys
+
 
 def dev_directory():
     home = os.path.expanduser('~')
     devdir = os.path.join(home, 'dev')
 
     return devdir
+
 
 def is_git_project(dirname):
     gitdir = os.path.join(dirname, '.git')
@@ -16,6 +17,7 @@ def is_git_project(dirname):
         return os.path.exists(gitconfig)
     else:
         return False
+
 
 def list_projects(all=False):
     devdir = dev_directory()

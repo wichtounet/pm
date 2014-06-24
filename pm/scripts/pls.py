@@ -1,24 +1,27 @@
 import argparse
+import sys
 import pm
 
 from pm.projects import list_projects
 
+
 def build_parser():
     parser = argparse.ArgumentParser(description='')
 
-    parser.add_argument('--version', 
-                        action = 'version',
-                        version = '%(prog)s ' + pm.VERSION)
-    
+    parser.add_argument('--version',
+                        action='version',
+                        version='%(prog)s ' + pm.VERSION)
+
     action = parser.add_mutually_exclusive_group()
-    action.add_argument('-a', '--all', 
-                        action = 'store_true', 
-                        help = 'Show non git projects too')
-    action.add_argument('-n', '--non-git-only', 
-                        action = 'store_true', 
-                        help = 'Show only non git projects')
-    
+    action.add_argument('-a', '--all',
+                        action='store_true',
+                        help='Show non git projects too')
+    action.add_argument('-n', '--non-git-only',
+                        action='store_true',
+                        help='Show only non git projects')
+
     return parser
+
 
 def main(args=None):
     # Parse command line
