@@ -1,5 +1,14 @@
+from pm.projects import list_projects
+
 def main():
-    print("test")
+
+    projects = list_projects()
+
+    for p in projects:
+        print(p)
+
+    print("")
+    print("{} projects".format(len(projects)))
 
     return 0
 
