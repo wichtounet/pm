@@ -37,7 +37,7 @@ def main(args=None):
         projects = list(set(all) - set(git))
 
     for p in projects:
-        print(p)
+        print(p.name)
 
     print("")
     print("{} projects".format(len(projects)))

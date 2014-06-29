@@ -23,7 +23,7 @@ def main(args=None):
     projects = list_projects(False)
 
     for p in projects:
-        print(p)
+        print(p.name)
 
     return 0
 

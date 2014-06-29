@@ -1,5 +1,10 @@
 import os
 
+class project:
+    def __init__(self, folder):
+        self.folder = folder
+        self.name = os.path.basename(folder)
+
 
 def dev_directory():
     home = os.path.expanduser('~')
@@ -27,6 +32,6 @@ def list_projects(all=False):
     for f in os.listdir(devdir):
         path = os.path.join(devdir, f)
         if os.path.isdir(path) and (all or is_git_project(path)):
-            projects.append(os.path.basename(path))
+            projects.append(project(path))
 
     return projects
