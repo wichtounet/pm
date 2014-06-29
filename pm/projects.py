@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+
 class project:
     current_branch = ""
 
@@ -43,10 +44,9 @@ class project:
 
         return branches
 
-
     def fetch(self, branch):
         command = ["git", "-C", self.folder, "fetch", "--quiet", branch]
-        
+
         subprocess.check_output(command)
 
     def fetch_all(self):
@@ -66,6 +66,7 @@ def dev_directory(dir=None):
         devdir = os.path.join(home, 'dev')
 
     return devdir
+
 
 def is_git_project(dirname):
     gitdir = os.path.join(dirname, '.git')

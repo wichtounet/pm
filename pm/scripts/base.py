@@ -5,8 +5,9 @@ import sys
 import pm
 import subprocess
 
-from pm.console import *
+from pm.console import blue_print, green_print, red_print, cyan_print
 from pm.projects import list_projects
+
 
 def build_parser():
     parser = argparse.ArgumentParser(description='')
@@ -15,7 +16,7 @@ def build_parser():
                         action='version',
                         version='%(prog)s ' + pm.VERSION)
 
-    subparsers = parser.add_subparsers(help='Subcommands', 
+    subparsers = parser.add_subparsers(help='Subcommands',
                                        description='Valid subcommands')
 
     parser_status = subparsers.add_parser('status', help='check status')
@@ -23,15 +24,17 @@ def build_parser():
                                action='store_true',
                                help='fetch remotes before querying status')
     parser_status.add_argument('dir', nargs='?',
-                        help='Look for projects in ~/dir or dir if absolute')
+                               help=('Look for projects in ~/dir'
+                                     ' or dir if absolute'))
 
     parser_status.set_defaults(func=status)
-    
+
     parser_ls = subparsers.add_parser('ls', help='List projects')
     parser_ls.set_defaults(func=ls)
-    
+
     parser_ls.add_argument('dir', nargs='?',
-                        help='Look for projects in ~/dir or dir if absolute')
+                           help=('Look for projects in ~/dir'
+                                 ' or dir if absolute'))
 
     action = parser_ls.add_mutually_exclusive_group()
     action.add_argument('-a', '--all',
@@ -43,6 +46,7 @@ def build_parser():
 
     return parser
 
+
 # Return true if the remote exists, false otherwise
 def remote_branch_exist(project, branch):
     command = ["git", "-C", project.folder, "branch", "-a"]
@@ -51,7 +55,8 @@ def remote_branch_exist(project, branch):
 
     remote_branch = "remotes/" + branch
 
-    return remote_branch in result 
+    return remote_branch in result
+
 
 # Return the status of the project
 def status_branch(project):
@@ -60,6 +65,7 @@ def status_branch(project):
     status = subprocess.check_output(command)
 
     return status
+
 
 # Return the hash of the current commit of the given branch
 def branch_hash(project, branch):
@@ -85,7 +91,7 @@ def status(args=None):
 
         blue_print("{0:<30s}".format(p.branch()))
 
-        if not "nothing to commit" in status:
+        if "nothing to commit" not in status:
             red_print("Uncommitted changes")
             clean = False
 
@@ -131,8 +137,8 @@ def status(args=None):
                 if local_hash == remote_hash:
                     green_print("Clean")
                 else:
-                    red_print("{} not in sync with {}".format(branch, remote_branch))
-
+                    red_print("{} not in sync with {}"
+                              .format(branch, remote_branch))
 
             print("")
 

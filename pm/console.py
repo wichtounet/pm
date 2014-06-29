@@ -6,6 +6,7 @@ color_cyan = "\033[0;33m"
 color_blue = "\033[0;34m"
 color_off = "\033[0;3047m"
 
+
 def green_print(message):
     print(color_green + message + color_off, end="")
 
