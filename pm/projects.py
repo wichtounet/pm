@@ -2,6 +2,8 @@ import os
 import subprocess
 
 class project:
+    current_branch = ""
+
     def __init__(self, folder):
         self.folder = folder
         self.name = os.path.basename(folder)
@@ -12,6 +14,35 @@ class project:
         remotes = subprocess.check_output(command)
 
         return remotes.splitlines()
+
+    def branch(self):
+        if not self.current_branch:
+            command = ["git", "-C", self.folder, "branch"]
+
+            branches = subprocess.check_output(command)
+
+            for b in branches.splitlines():
+                if "*" in b:
+                    self.current_branch = b[2:]
+                    return self.current_branch
+
+            self.current_branch = "No current branch"
+            return self.current_branch
+        else:
+            return self.current_branch
+
+    def branches(self):
+        command = ["git", "-C", self.folder, "branch"]
+
+        res = subprocess.check_output(command)
+
+        branches = []
+
+        for b in res.splitlines():
+            branches.append(b[2:])
+
+        return branches
+
 
     def fetch(self, branch):
         command = ["git", "-C", self.folder, "fetch", "--quiet", branch]

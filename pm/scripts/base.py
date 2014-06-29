@@ -1,10 +1,11 @@
+from __future__ import print_function
+
 import argparse
 import sys
 import pm
 import subprocess
 
 from pm.projects import list_projects
-
 
 def build_parser():
     parser = argparse.ArgumentParser(description='')
@@ -43,14 +44,38 @@ def build_parser():
 
 color_red = "\033[0;31m"
 color_green = "\033[0;32m"
+color_cyan = "\033[0;33m"
+color_blue = "\033[0;34m"
 color_off = "\033[0;3047m"
 
 def green_print(message):
-    print(color_green + message + color_off)
+    print(color_green + message + color_off, end="")
 
 
 def red_print(message):
-    print(color_red + message + color_off)
+    print(color_red + message + color_off, end="")
+
+
+def blue_print(message):
+    print(color_blue + message + color_off, end="")
+
+
+def cyan_print(message):
+    print(color_cyan + message + color_off, end="")
+
+def remote_branch_exist(project, branch):
+    command = ["git", "-C", project.folder, "branch", "-a"]
+
+    result = subprocess.check_output(command)
+
+    remote_branch = "remotes/" + branch
+
+    return remote_branch in result 
+
+def branch_hash(project, branch):
+    command = ["git", "-C", project.folder, "rev-parse", "--verify", branch]
+
+    return subprocess.check_output(command)
 
 
 def status(args=None):
@@ -68,21 +93,61 @@ def status(args=None):
 
         clean = True
 
+        print("\t", end="")
+
+        blue_print("{0:<30s}".format(p.branch()))
+
         if not "nothing to commit" in status:
-            red_print("\tUncommitted changes")
+            red_print("Uncommitted changes")
             clean = False
 
         if "Your branch is ahead of '" in status:
-            red_print("\tAhead of remote")
+            if not clean:
+                print(" - ", end="")
+            red_print("Ahead of remote")
             clean = False
 
         if "Your branch is behind '" in status:
-            red_print("\tBehind remote")
+            if not clean:
+                print(" - ", end="")
+            red_print("Behind remote")
+            clean = False
+
+        if "' have diverged" in status:
+            if not clean:
+                print(" - ", end="")
+            red_print("Diverged with remote")
             clean = False
 
         if clean:
-            green_print("\tClean")
+            green_print("Clean")
+        
+        print("")
 
+        for branch in p.branches():
+            if branch == p.branch():
+                continue
+
+            print("\t", end="")
+
+            cyan_print("{0:<30s}".format(branch))
+
+            remote_branch = "origin/" + branch
+
+            if not remote_branch_exist(p, remote_branch):
+                red_print("No remote branch {}".format(remote_branch))
+            else:
+                local_hash = branch_hash(p, branch)
+                remote_hash = branch_hash(p, remote_branch)
+
+                if local_hash == remote_hash:
+                    green_print("Clean")
+                else:
+                    red_print("{} not in sync with {}".format(branch, remote_branch))
+
+        
+            print("")
+        
         print("")
 
 
