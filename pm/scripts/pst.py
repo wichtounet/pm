@@ -1,6 +1,7 @@
 import argparse
 import sys
 import pm
+import subprocess
 
 from pm.projects import list_projects
 
@@ -14,6 +15,15 @@ def build_parser():
 
     return parser
 
+color_red = "\033[0;31m"
+color_green = "\033[0;32m"
+color_off = "\033[0;3047m"
+
+def green_print(message):
+    print(color_green + message + color_off)
+
+def red_print(message):
+    print(color_red + message + color_off)
 
 def main(args=None):
     # Parse command line
@@ -24,6 +34,29 @@ def main(args=None):
 
     for p in projects:
         print(p.name)
+
+        command = ["git", "-C", p.folder, "status"]
+
+        status = subprocess.check_output(command)
+
+        clean = True
+
+        if not "nothing to commit" in status:
+            red_print("\tUncommitted changes")
+            clean = False
+
+        if "Your branch is ahead of '" in status:
+            red_print("\tAhead of remote")
+            clean = False
+
+        if "Your branch is behind '" in status:
+            red_print("\tBehind remote")
+            clean = False
+
+        if clean:
+            green_print("\tClean")
+
+        print("")
 
     return 0
 
