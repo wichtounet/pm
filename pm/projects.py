@@ -23,12 +23,18 @@ class project:
             self.fetch(remote)
 
 
-def dev_directory():
+def dev_directory(dir=None):
     home = os.path.expanduser('~')
-    devdir = os.path.join(home, 'dev')
+
+    if dir:
+        if dir[0] == '/':
+            devdir = dir
+        else:
+            devdir = os.path.join(home, dir)
+    else:
+        devdir = os.path.join(home, 'dev')
 
     return devdir
-
 
 def is_git_project(dirname):
     gitdir = os.path.join(dirname, '.git')
@@ -41,8 +47,8 @@ def is_git_project(dirname):
         return False
 
 
-def list_projects(all=False):
-    devdir = dev_directory()
+def list_projects(all=False, dir=None):
+    devdir = dev_directory(dir)
 
     projects = []
 

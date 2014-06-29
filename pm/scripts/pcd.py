@@ -12,8 +12,9 @@ def build_parser():
     parser.add_argument('--version',
                         action='version',
                         version='%(prog)s ' + pm.VERSION)
-
     parser.add_argument('directory')
+    parser.add_argument('dir', nargs='?',
+                        help='Look for projects in ~/dir or dir if absolute')
 
     return parser
 
@@ -23,7 +24,7 @@ def main(args=None):
     parser = build_parser()
     args = parser.parse_args(args)
 
-    devdir = dev_directory()
+    devdir = dev_directory(args.dir)
     projectdir = os.path.join(devdir, args.directory)
 
     if os.path.isdir(projectdir):

@@ -11,6 +11,8 @@ def build_parser():
     parser.add_argument('--version',
                         action='version',
                         version='%(prog)s ' + pm.VERSION)
+    parser.add_argument('dir', nargs='?',
+                        help='Look for projects in ~/dir or dir if absolute')
 
     action = parser.add_mutually_exclusive_group()
     action.add_argument('-a', '--all',
@@ -29,10 +31,10 @@ def main(args=None):
     args = parser.parse_args(args)
 
     if not args.non_git_only:
-        projects = list_projects(args.all)
+        projects = list_projects(args.all, args.dir)
     else:
-        all = list_projects(True)
-        git = list_projects(False)
+        all = list_projects(True, args.dir)
+        git = list_projects(False, args.dir)
 
         projects = list(set(all) - set(git))
 

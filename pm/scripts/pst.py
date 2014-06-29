@@ -15,6 +15,8 @@ def build_parser():
     parser.add_argument('-f', '--fetch',
                         action='store_true',
                         help='fetch remotes before querying status')
+    parser.add_argument('dir', nargs='?',
+                        help='Look for projects in ~/dir or dir if absolute')
 
     return parser
 
@@ -33,7 +35,7 @@ def main(args=None):
     parser = build_parser()
     args = parser.parse_args(args)
 
-    projects = list_projects(False)
+    projects = list_projects(False, args.dir)
 
     for p in projects:
         print(p.name)
