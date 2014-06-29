@@ -12,6 +12,9 @@ def build_parser():
     parser.add_argument('--version',
                         action='version',
                         version='%(prog)s ' + pm.VERSION)
+    parser.add_argument('-f', '--fetch',
+                        action='store_true',
+                        help='fetch remotes before querying status')
 
     return parser
 
@@ -34,6 +37,9 @@ def main(args=None):
 
     for p in projects:
         print(p.name)
+
+        if args.fetch:
+            p.fetch_all()
 
         command = ["git", "-C", p.folder, "status"]
 

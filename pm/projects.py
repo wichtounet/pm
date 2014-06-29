@@ -1,9 +1,26 @@
 import os
+import subprocess
 
 class project:
     def __init__(self, folder):
         self.folder = folder
         self.name = os.path.basename(folder)
+
+    def remotes(self):
+        command = ["git", "-C", self.folder, "remote"]
+
+        remotes = subprocess.check_output(command)
+
+        return remotes.splitlines()
+
+    def fetch(self, branch):
+        command = ["git", "-C", self.folder, "fetch", "--quiet", branch]
+        
+        subprocess.check_output(command)
+
+    def fetch_all(self):
+        for remote in self.remotes():
+            self.fetch(remote)
 
 
 def dev_directory():
