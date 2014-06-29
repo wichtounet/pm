@@ -63,6 +63,7 @@ def blue_print(message):
 def cyan_print(message):
     print(color_cyan + message + color_off, end="")
 
+# Return true if the remote exists, false otherwise
 def remote_branch_exist(project, branch):
     command = ["git", "-C", project.folder, "branch", "-a"]
 
@@ -72,6 +73,15 @@ def remote_branch_exist(project, branch):
 
     return remote_branch in result 
 
+# Return the status of the project
+def status_branch(project):
+    command = ["git", "-C", project.folder, "status"]
+
+    status = subprocess.check_output(command)
+
+    return status
+
+# Return the hash of the current commit of the given branch
 def branch_hash(project, branch):
     command = ["git", "-C", project.folder, "rev-parse", "--verify", branch]
 
@@ -87,9 +97,7 @@ def status(args=None):
         if args.fetch:
             p.fetch_all()
 
-        command = ["git", "-C", p.folder, "status"]
-
-        status = subprocess.check_output(command)
+        status = status_branch(p)
 
         clean = True
 
@@ -121,7 +129,7 @@ def status(args=None):
 
         if clean:
             green_print("Clean")
-        
+
         print("")
 
         for branch in p.branches():
@@ -145,9 +153,9 @@ def status(args=None):
                 else:
                     red_print("{} not in sync with {}".format(branch, remote_branch))
 
-        
+
             print("")
-        
+
         print("")
 
 
