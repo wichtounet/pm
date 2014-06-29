@@ -12,7 +12,6 @@ def build_parser():
     parser.add_argument('--version',
                         action='version',
                         version='%(prog)s ' + pm.VERSION)
-    parser.set_defaults(func=status)
 
     subparsers = parser.add_subparsers(help='Subcommands', 
                                        description='Valid subcommands')
