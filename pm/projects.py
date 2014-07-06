@@ -88,7 +88,9 @@ def list_projects(all=False, dir=None):
 
     for f in os.listdir(devdir):
         path = os.path.join(devdir, f)
-        if os.path.isdir(path) and (all or is_git_project(path)):
-            projects.append(project(path))
+        git = is_git_project(path)
+
+        if os.path.isdir(path) and (all or git):
+            projects.append(project(path, "Git" if git else None))
 
     return projects

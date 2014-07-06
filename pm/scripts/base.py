@@ -39,10 +39,10 @@ def build_parser():
     action = parser_ls.add_mutually_exclusive_group()
     action.add_argument('-a', '--all',
                         action='store_true',
-                        help='Show non git projects too')
-    action.add_argument('-n', '--non-git-only',
+                        help='Show non-versioned  projects too')
+    action.add_argument('-n', '--non-scm-only',
                         action='store_true',
-                        help='Show only non git projects')
+                        help='Show only non versioned projects')
 
     return parser
 
