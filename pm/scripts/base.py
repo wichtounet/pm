@@ -155,7 +155,7 @@ def ls(args=None):
         projects = list(set(all) - set(git))
 
     for p in projects:
-        print(p.name)
+        print("{} (scm:{})".format(p.name, p.scm))
 
     print("")
     print("{} projects".format(len(projects)))

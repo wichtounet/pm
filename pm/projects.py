@@ -4,9 +4,11 @@ import subprocess
 
 class project:
     current_branch = ""
+    scm = None
 
-    def __init__(self, folder):
+    def __init__(self, folder, scm=None):
         self.folder = folder
+        self.scm = scm
         self.name = os.path.basename(folder)
 
     def remotes(self):
