@@ -1,5 +1,8 @@
+from __future__ import print_function
+
 import subprocess
 
+from pm.console import blue_print, green_print, red_print, cyan_print
 
 class Git:
     def __init__(self, project):
@@ -55,6 +58,36 @@ class Git:
         status = subprocess.check_output(command)
 
         return status
+
+    def print_status(self):
+        status = self.status()
+
+        clean = True
+
+        if "nothing to commit" not in status:
+            red_print("Uncommitted changes")
+            clean = False
+
+        if "Your branch is ahead of '" in status:
+            if not clean:
+                print(" - ", end="")
+            red_print("Ahead of remote")
+            clean = False
+
+        if "Your branch is behind '" in status:
+            if not clean:
+                print(" - ", end="")
+            red_print("Behind remote")
+            clean = False
+
+        if "' have diverged" in status:
+            if not clean:
+                print(" - ", end="")
+            red_print("Diverged with remote")
+            clean = False
+
+        if clean:
+            green_print("Clean")
 
     def branches(self):
         command = ["git", "-C", self.folder(), "branch"]

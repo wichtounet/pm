@@ -44,6 +44,9 @@ class project:
     def status(self):
         return self.get_scm().status()
 
+    def print_status(self):
+        self.get_scm().print_status()
+
     def branches(self):
         return self.get_scm().branches()
 

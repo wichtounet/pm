@@ -55,38 +55,12 @@ def status(args=None):
         if args.fetch:
             p.fetch_all()
 
-        status = p.status()
-
-        clean = True
 
         print("\t", end="")
 
         blue_print("{0:<30s}".format(p.branch()))
 
-        if "nothing to commit" not in status:
-            red_print("Uncommitted changes")
-            clean = False
-
-        if "Your branch is ahead of '" in status:
-            if not clean:
-                print(" - ", end="")
-            red_print("Ahead of remote")
-            clean = False
-
-        if "Your branch is behind '" in status:
-            if not clean:
-                print(" - ", end="")
-            red_print("Behind remote")
-            clean = False
-
-        if "' have diverged" in status:
-            if not clean:
-                print(" - ", end="")
-            red_print("Diverged with remote")
-            clean = False
-
-        if clean:
-            green_print("Clean")
+        p.print_status()
 
         print("")
 
