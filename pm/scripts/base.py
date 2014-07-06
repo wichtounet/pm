@@ -3,7 +3,6 @@ from __future__ import print_function
 import argparse
 import sys
 import pm
-import subprocess
 
 from pm.console import blue_print, green_print, red_print, cyan_print
 from pm.projects import list_projects
@@ -45,8 +44,6 @@ def build_parser():
                         help='Show only non versioned projects')
 
     return parser
-
-
 
 
 def status(args=None):

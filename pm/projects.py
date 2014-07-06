@@ -1,7 +1,7 @@
 import os
-import subprocess
 
 from pm.scm.git import Git
+
 
 class project:
     current_branch = ""
@@ -14,7 +14,7 @@ class project:
         self.name = os.path.basename(folder)
 
     def get_scm(self):
-        if not self.scm_i == None:
+        if self.scm_i is not None:
             return self.scm_i
 
         if self.scm == "Git":

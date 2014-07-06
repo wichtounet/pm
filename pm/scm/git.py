@@ -1,4 +1,3 @@
-import os
 import subprocess
 
 
@@ -32,7 +31,7 @@ class Git:
                 return self.current_branch
 
         return "No current branch"
-    
+
     # Return true if the remote exists, false otherwise
     def remote_branch_exist(self, branch):
         command = ["git", "-C", self.folder(), "branch", "-a"]
@@ -42,13 +41,13 @@ class Git:
         remote_branch = "remotes/" + branch
 
         return remote_branch in result
-    
+
     # Return the hash of the current commit of the given branch
     def hash(self, branch):
         command = ["git", "-C", self.folder(), "rev-parse", "--verify", branch]
 
         return subprocess.check_output(command)
-    
+
     # Return the status of the project
     def status(self):
         command = ["git", "-C", self.folder(), "status"]
