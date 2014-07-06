@@ -3,6 +3,12 @@ import os
 from pm.scm.git import Git
 
 
+class subproject:
+    def __init__(self, name):
+        self.name = name
+        self.subs = []
+
+
 class project:
     current_branch = ""
     scm = None
@@ -49,6 +55,9 @@ class project:
 
     def branches(self):
         return self.get_scm().branches()
+
+    def subprojects(self):
+        return self.get_scm().subprojects()
 
     def fetch(self, branch):
         self.get_scm().fetch(branch)

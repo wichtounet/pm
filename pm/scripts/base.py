@@ -22,6 +22,9 @@ def build_parser():
     parser_status.add_argument('-f', '--fetch',
                                action='store_true',
                                help='fetch remotes before querying status')
+    parser_status.add_argument('-s', '--submodule',
+                               action='store_true',
+                               help='display the status of submodules')
     parser_status.add_argument('dir', nargs='?',
                                help=('Look for projects in ~/dir'
                                      ' or dir if absolute'))
@@ -46,6 +49,13 @@ def build_parser():
     return parser
 
 
+def print_subproject(sp, padder):
+    blue_print("    {0}-> {1:<30s}".format(padder, sp.name))
+    print()
+    for ssp in sp.subs:
+        print_subproject(ssp, padder + "  ")
+
+
 def status(args=None):
     projects = list_projects(False, args.dir)
 
@@ -55,8 +65,7 @@ def status(args=None):
         if args.fetch:
             p.fetch_all()
 
-
-        print("\t", end="")
+        print("    ", end="")
 
         blue_print("{0:<30s}".format(p.branch()))
 
@@ -64,11 +73,15 @@ def status(args=None):
 
         print("")
 
+        if args.submodule:
+            for sub in p.subprojects():
+                print_subproject(sub, " ")
+
         for branch in p.branches():
             if branch == p.branch():
                 continue
 
-            print("\t", end="")
+            print("    ", end="")
 
             cyan_print("{0:<30s}".format(branch))
 

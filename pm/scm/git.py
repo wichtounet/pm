@@ -2,7 +2,26 @@ from __future__ import print_function
 
 import subprocess
 
-from pm.console import blue_print, green_print, red_print, cyan_print
+from pm.console import green_print, red_print
+from pm.scm.base import subproject
+
+
+class submodule:
+    def __init__(self, name):
+        self.name = name
+        self.subs = dict()
+
+
+def to_subproject(sm):
+    p = subproject(sm.name)
+
+    for key in sm.subs:
+        m = sm.subs[key]
+
+        p.subs.append(to_subproject(m))
+
+    return p
+
 
 class Git:
     def __init__(self, project):
@@ -22,6 +41,47 @@ class Git:
         remotes = subprocess.check_output(command)
 
         return remotes.splitlines()
+
+    def subprojects(self):
+        command = ["git", "-C", self.folder(), "submodule", "status",
+                   "--recursive"]
+
+        output = subprocess.check_output(command)
+
+        submodules = dict()
+
+        for line in output.splitlines():
+            name = line.split()[1]
+
+            if '/' not in name:
+                submodules[name] = submodule(name)
+            else:
+                search = submodules
+                parentsub = None
+
+                while '/' in name:
+                    parent = name.split("/")[0]
+
+                    if parent in search:
+                        parentsub = submodules[parent]
+                        search = parentsub.subs
+                        name = name[name.index("/")+1:]
+                    else:
+                        break
+
+                if parentsub is None:
+                    submodules[name] = submodule(name)
+                else:
+                    parentsub.subs[name] = submodule(name)
+
+        subprojects = []
+
+        for key in submodules:
+            m = submodules[key]
+
+            subprojects.append(to_subproject(m))
+
+        return subprojects
 
     def branch(self):
         command = ["git", "-C", self.folder(), "branch"]
@@ -61,7 +121,8 @@ class Git:
 
     # Return the porcelain status of the project
     def porcelain_status(self):
-        command = ["git", "-C", self.folder(), "status", "--porcelain", "--branch"]
+        command = ["git", "-C", self.folder(), "status",
+                   "--porcelain", "--branch"]
 
         status = subprocess.check_output(command)
 
