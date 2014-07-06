@@ -47,31 +47,6 @@ def build_parser():
     return parser
 
 
-# Return true if the remote exists, false otherwise
-def remote_branch_exist(project, branch):
-    command = ["git", "-C", project.folder, "branch", "-a"]
-
-    result = subprocess.check_output(command)
-
-    remote_branch = "remotes/" + branch
-
-    return remote_branch in result
-
-
-# Return the status of the project
-def status_branch(project):
-    command = ["git", "-C", project.folder, "status"]
-
-    status = subprocess.check_output(command)
-
-    return status
-
-
-# Return the hash of the current commit of the given branch
-def branch_hash(project, branch):
-    command = ["git", "-C", project.folder, "rev-parse", "--verify", branch]
-
-    return subprocess.check_output(command)
 
 
 def status(args=None):
@@ -83,7 +58,7 @@ def status(args=None):
         if args.fetch:
             p.fetch_all()
 
-        status = status_branch(p)
+        status = p.status()
 
         clean = True
 
@@ -128,11 +103,11 @@ def status(args=None):
 
             remote_branch = "origin/" + branch
 
-            if not remote_branch_exist(p, remote_branch):
+            if not p.remote_branch_exist(remote_branch):
                 red_print("No remote branch {}".format(remote_branch))
             else:
-                local_hash = branch_hash(p, branch)
-                remote_hash = branch_hash(p, remote_branch)
+                local_hash = p.hash(branch)
+                remote_hash = p.hash(remote_branch)
 
                 if local_hash == remote_hash:
                     green_print("Clean")

@@ -1,55 +1,54 @@
 import os
 import subprocess
 
+from pm.scm.git import Git
 
 class project:
     current_branch = ""
     scm = None
+    scm_i = None
 
     def __init__(self, folder, scm=None):
         self.folder = folder
         self.scm = scm
         self.name = os.path.basename(folder)
 
+    def get_scm(self):
+        if not self.scm_i == None:
+            return self.scm_i
+
+        if self.scm == "Git":
+            self.scm_i = Git(self)
+            return self.scm_i
+
+        return None
+
     def remotes(self):
-        command = ["git", "-C", self.folder, "remote"]
+        return self.get_scm().remotes()
 
-        remotes = subprocess.check_output(command)
-
-        return remotes.splitlines()
+    # Return true if the remote exists, false otherwise
+    def remote_branch_exist(self, branch):
+        return self.get_scm().remote_branch_exist(branch)
 
     def branch(self):
         if not self.current_branch:
-            command = ["git", "-C", self.folder, "branch"]
+            self.current_branch = self.get_scm().branch()
 
-            branches = subprocess.check_output(command)
+        return self.current_branch
 
-            for b in branches.splitlines():
-                if "*" in b:
-                    self.current_branch = b[2:]
-                    return self.current_branch
+    # Return the hash of the current commit of the given branch
+    def hash(self, branch):
+        return self.get_scm().hash(branch)
 
-            self.current_branch = "No current branch"
-            return self.current_branch
-        else:
-            return self.current_branch
+    # Return the status of the project
+    def status(self):
+        return self.get_scm().status()
 
     def branches(self):
-        command = ["git", "-C", self.folder, "branch"]
-
-        res = subprocess.check_output(command)
-
-        branches = []
-
-        for b in res.splitlines():
-            branches.append(b[2:])
-
-        return branches
+        return self.get_scm().branches()
 
     def fetch(self, branch):
-        command = ["git", "-C", self.folder, "fetch", "--quiet", branch]
-
-        subprocess.check_output(command)
+        self.get_scm().fetch(branch)
 
     def fetch_all(self):
         for remote in self.remotes():
