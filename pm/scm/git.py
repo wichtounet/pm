@@ -63,7 +63,7 @@ class Git:
                     parent = name.split("/")[0]
 
                     if parent in search:
-                        parentsub = submodules[parent]
+                        parentsub = search[parent]
                         search = parentsub.subs
                         name = name[name.index("/")+1:]
                     else:
