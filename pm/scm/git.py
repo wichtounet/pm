@@ -59,31 +59,41 @@ class Git:
 
         return status
 
+    # Return the porcelain status of the project
+    def porcelain_status(self):
+        command = ["git", "-C", self.folder(), "status", "--porcelain", "--branch"]
+
+        status = subprocess.check_output(command)
+
+        return status
+
     def print_status(self):
-        status = self.status()
+        status = self.porcelain_status()
+
+        branch_line = status.splitlines()[0]
 
         clean = True
 
-        if "nothing to commit" not in status:
+        if " M " in status:
             red_print("Uncommitted changes")
             clean = False
 
-        if "Your branch is ahead of '" in status:
+        if "ahead" in branch_line and "behind" in branch_line:
+            if not clean:
+                print(" - ", end="")
+            red_print("Diverged with remote")
+            clean = False
+
+        elif " [ahead" in branch_line:
             if not clean:
                 print(" - ", end="")
             red_print("Ahead of remote")
             clean = False
 
-        if "Your branch is behind '" in status:
+        elif " [behind" in branch_line:
             if not clean:
                 print(" - ", end="")
             red_print("Behind remote")
-            clean = False
-
-        if "' have diverged" in status:
-            if not clean:
-                print(" - ", end="")
-            red_print("Diverged with remote")
             clean = False
 
         if clean:
