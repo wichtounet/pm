@@ -48,7 +48,10 @@ class project:
 
     # Return the status of the project
     def status(self):
-        return self.get_scm().status()
+        if not hasattr(self, 'st'):
+            self.st = self.get_scm().status()
+
+        return self.st
 
     def print_status(self):
         self.get_scm().print_status()
@@ -57,7 +60,10 @@ class project:
         return self.get_scm().branches()
 
     def subprojects(self):
-        return self.get_scm().subprojects()
+        if not hasattr(self, 'sub'):
+            self.sub = self.get_scm().subprojects()
+
+        return self.sub
 
     def fetch(self, branch):
         self.get_scm().fetch(branch)
@@ -65,6 +71,12 @@ class project:
     def fetch_all(self):
         for remote in self.remotes():
             self.fetch(remote)
+
+    def cache(self, submodule):
+        if submodule:
+            self.subprojects()
+
+        self.status()
 
 
 def dev_directory(dir=None):

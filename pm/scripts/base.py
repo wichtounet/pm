@@ -4,6 +4,8 @@ import argparse
 import sys
 import pm
 
+from multiprocessing.pool import ThreadPool as Pool
+
 from pm.console import blue_print, green_print, red_print, cyan_print
 from pm.projects import list_projects
 
@@ -25,6 +27,7 @@ def build_parser():
     parser_status.add_argument('-s', '--submodule',
                                action='store_true',
                                help='display the status of submodules')
+    parser_status.add_argument("-j", type=int, help="Use J threads")
     parser_status.add_argument('dir', nargs='?',
                                help=('Look for projects in ~/dir'
                                      ' or dir if absolute'))
@@ -58,6 +61,18 @@ def print_subproject(sp, padder):
 
 def status(args=None):
     projects = list_projects(False, args.dir)
+
+    if args.j:
+        pool = Pool(args.j)
+
+        def worker(p):
+            p.cache(args.submodule)
+
+        for p in projects:
+            pool.apply_async(worker, (p,))
+
+        pool.close()
+        pool.join()
 
     for p in projects:
         print(p.name)

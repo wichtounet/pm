@@ -48,6 +48,9 @@ class Git:
 
         output = subprocess.check_output(command)
 
+        if not output:
+            return []
+
         submodules = dict()
 
         for line in output.splitlines():
@@ -111,16 +114,8 @@ class Git:
 
         return subprocess.check_output(command)
 
-    # Return the status of the project
-    def status(self):
-        command = ["git", "-C", self.folder(), "status"]
-
-        status = subprocess.check_output(command)
-
-        return status
-
     # Return the porcelain status of the project
-    def porcelain_status(self):
+    def status(self):
         command = ["git", "-C", self.folder(), "status",
                    "--porcelain", "--branch"]
 
@@ -129,7 +124,7 @@ class Git:
         return status
 
     def print_status(self):
-        status = self.porcelain_status()
+        status = self.project.status()
 
         branch_line = status.splitlines()[0]
 
