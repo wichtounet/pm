@@ -56,8 +56,8 @@ def build_parser():
 
 
 def print_subproject(project, sp, padder):
-    blue_print("   {1}-> {2:<{0}s}".format(30 - len(padder) - 2, 
-                                            padder, sp.name))
+    blue_print("   {1}-> {2:<{0}s}".format(30 - len(padder) - 2,
+                                           padder, sp.name))
 
     project.print_submodule_status(sp)
 

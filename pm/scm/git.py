@@ -52,7 +52,7 @@ class Git:
         for part in reversed(parts):
             path = os.path.join(path, part)
 
-        return path;
+        return path
 
     def fetch_sub(self, sub):
         path = self.sub_folder(sub)
