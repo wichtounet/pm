@@ -129,8 +129,8 @@ class Git:
         return "No current branch"
 
     # Return true if the remote exists, false otherwise
-    def remote_branch_exist(self, branch):
-        command = ["git", "-C", self.folder(), "branch", "-a"]
+    def remote_branch_exist_f(self, folder, branch):
+        command = ["git", "-C", folder, "branch", "-a"]
 
         result = subprocess.check_output(command)
 
@@ -138,11 +138,19 @@ class Git:
 
         return remote_branch in result
 
-    # Return the hash of the current commit of the given branch
-    def hash(self, branch):
-        command = ["git", "-C", self.folder(), "rev-parse", "--verify", branch]
+    # Return true if the remote exists, false otherwise
+    def remote_branch_exist(self, branch):
+        return self.remote_branch_exist_f(self.folder(), branch)
 
-        return subprocess.check_output(command)
+    # Return the hash of the given object
+    def hash_f(self, folder, o):
+        command = ["git", "-C", folder, "rev-parse", "--verify", o]
+
+        return subprocess.check_output(command).splitlines()[0]
+
+    # Return the hash of the given object
+    def hash(self, o):
+        return self.hash_f(self.folder(), o)
 
     # Return the porcelain status of the project
     def status(self):
@@ -195,6 +203,23 @@ class Git:
 
         return status
 
+    def find_detached_source_branch(self, path):
+        command = ["git", "-C", path, "for-each-ref",
+                "--format='%(objectname) %(refname:short)'", "refs"]
+
+        ref_branches = subprocess.check_output(command).splitlines()
+
+        command = ["git", "-C", path, "show-ref", "-s", "--", "HEAD"]
+        current_commit = subprocess.check_output(command).splitlines()[0]
+
+        branch_name = ""
+
+        for ref_branch in ref_branches:
+            if current_commit in ref_branch:
+                branch_name = ref_branch[1:-1].split()[1]
+
+        return branch_name
+
     def print_submodule_status(self, sub):
         status = self.project.submodule_status(sub)
 
@@ -214,19 +239,7 @@ class Git:
 
             path = self.sub_folder(sub)
 
-            command = ["git", "-C", path, "for-each-ref",
-                       "--format='%(objectname) %(refname:short)'", "refs"]
-
-            ref_branches = subprocess.check_output(command).splitlines()
-
-            command = ["git", "-C", path, "show-ref", "-s", "--", "HEAD"]
-            current_commit = subprocess.check_output(command).splitlines()[0]
-
-            branch_name = ""
-
-            for ref_branch in ref_branches:
-                if current_commit in ref_branch:
-                    branch_name = ref_branch[1:-1].split()[1]
+            branch_name = self.find_detached_source_branch(path)
 
             if not branch_name:
                 red_print("Detached (unable to find source")
@@ -235,22 +248,12 @@ class Git:
 
                 remote_branch = "remotes/" + branch_name
 
-                command = ["git", "-C", path, "branch", "-a"]
-
-                result = subprocess.check_output(command)
-
-                if remote_branch not in result:
+                if self.remote_branch_exist_f(path, remote_branch):
                     print(" - ", end="")
                     red_print("No remote branch {}".format(remote_branch))
                 else:
-                    command = ["git", "-C", path, "rev-parse", "HEAD"]
-                    local_hash = subprocess.check_output(command)
-                    local_hash = local_hash.splitlines()[0]
-
-                    command = ["git", "-C", path, "rev-parse", "--verify",
-                               remote_branch]
-                    remote_hash = subprocess.check_output(command)
-                    remote_hash = remote_hash.splitlines()[0]
+                    local_hash = self.hash_f(path, "HEAD")
+                    remote_hash = self.hash_f(path, remote_branch)
 
                     if local_hash == remote_hash:
                         print(" - ", end="")
