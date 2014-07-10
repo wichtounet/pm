@@ -25,8 +25,10 @@ def to_subproject(sm, parent=None):
 
     return p
 
+
 def exec_command(command):
     return subprocess.check_output(command, universal_newlines=True)
+
 
 class Git:
     def __init__(self, project):
@@ -213,7 +215,7 @@ class Git:
 
     def find_detached_source_branch(self, path):
         command = ["git", "-C", path, "for-each-ref",
-                "--format='%(objectname) %(refname:short)'", "refs"]
+                   "--format='%(objectname) %(refname:short)'", "refs"]
 
         ref_branches = exec_command(command).splitlines()
 

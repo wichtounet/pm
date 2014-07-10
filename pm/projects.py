@@ -36,6 +36,7 @@ class project:
     def remote_branch_exist(self, branch):
         return self.get_scm().remote_branch_exist(branch)
 
+    # Return the current branch
     def branch(self):
         return self.get_scm().branch()
 
