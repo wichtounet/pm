@@ -96,7 +96,8 @@ class project:
 
     def cache(self, submodule):
         if submodule:
-            self.subprojects()
+            for p in self.subprojects():
+                self.submodule_status(p)
 
         self.status()
 
