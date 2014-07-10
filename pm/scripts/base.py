@@ -27,6 +27,9 @@ def build_parser():
     parser_status.add_argument('-s', '--submodule',
                                action='store_true',
                                help='display the status of submodules')
+    parser_status.add_argument('-p', '--parallel-fetch',
+                               action='store_true',
+                               help='Allow parallel fetching')
     parser_status.add_argument("-j", type=int, help="Use J threads")
     parser_status.add_argument('dir', nargs='?',
                                help=('Look for projects in ~/dir'
@@ -68,8 +71,14 @@ def status(args=None):
         def worker(p):
             p.cache(args.submodule)
 
+            if args.parallel_fetch:
+                p.fetch_all()
+
         for p in projects:
             pool.apply_async(worker, (p,))
+
+        if args.parallel_fetch:
+            args.fetch = False
 
         pool.close()
         pool.join()
