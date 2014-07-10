@@ -210,8 +210,54 @@ class Git:
             if not clean:
                 print(" - ", end="")
 
-            red_print("Not on a branch")
             clean = False
+
+            path = self.sub_folder(sub)
+
+            command = ["git", "-C", path, "for-each-ref",
+                       "--format='%(objectname) %(refname:short)'", "refs"]
+
+            ref_branches = subprocess.check_output(command).splitlines()
+
+            command = ["git", "-C", path, "show-ref", "-s", "--", "HEAD"]
+            current_commit = subprocess.check_output(command).splitlines()[0]
+
+            branch_name = ""
+
+            for ref_branch in ref_branches:
+                if current_commit in ref_branch:
+                    branch_name = ref_branch[1:-1].split()[1]
+
+            if not branch_name:
+                red_print("Detached (unable to find source")
+            else:
+                red_print("Detached (from {})".format(branch_name))
+
+                remote_branch = "remotes/" + branch_name
+
+                command = ["git", "-C", path, "branch", "-a"]
+
+                result = subprocess.check_output(command)
+
+                if remote_branch not in result:
+                    print(" - ", end="")
+                    red_print("No remote branch {}".format(remote_branch))
+                else:
+                    command = ["git", "-C", path, "rev-parse", "HEAD"]
+                    local_hash = subprocess.check_output(command)
+                    local_hash = local_hash.splitlines()[0]
+
+                    command = ["git", "-C", path, "rev-parse", "--verify",
+                               remote_branch]
+                    remote_hash = subprocess.check_output(command)
+                    remote_hash = remote_hash.splitlines()[0]
+
+                    if local_hash == remote_hash:
+                        print(" - ", end="")
+                        green_print("In sync")
+                    else:
+                        print(" - ", end="")
+                        red_print("Not in sync with {}".format(remote_branch))
 
         if "ahead" in branch_line and "behind" in branch_line:
             if not clean:
