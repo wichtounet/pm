@@ -65,6 +65,15 @@ def print_subproject(sp, padder):
 def status(args=None):
     projects = list_projects(False, args.dir)
 
+    if args.parallel_fetch and not args.fetch:
+        print("Warning: -p has no effect without -f")
+
+    if args.parallel_fetch and not args.j:
+        print("Warning: -p has no effect without -j")
+
+    if args.fetch:
+        print("Fetch in progres...")
+
     if args.j:
         pool = Pool(args.j)
 
@@ -77,17 +86,18 @@ def status(args=None):
         for p in projects:
             pool.apply_async(worker, (p,))
 
-        if args.parallel_fetch:
-            args.fetch = False
-
         pool.close()
         pool.join()
 
+    if args.fetch and not (args.j and args.parallel_fetch):
+        for p in projects:
+            p.fetch_all()
+
+    if args.fetch:
+        print("Fetch done")
+
     for p in projects:
         print(p.name)
-
-        if args.fetch:
-            p.fetch_all()
 
         print("    ", end="")
 
