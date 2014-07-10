@@ -14,8 +14,6 @@ class project:
     scm = None
     scm_i = None
 
-    sub_status = dict()
-
     def __init__(self, folder, scm=None):
         self.folder = folder
         self.scm = scm
@@ -39,10 +37,7 @@ class project:
         return self.get_scm().remote_branch_exist(branch)
 
     def branch(self):
-        if not self.current_branch:
-            self.current_branch = self.get_scm().branch()
-
-        return self.current_branch
+        return self.get_scm().branch()
 
     # Return the hash of the current commit of the given branch
     def hash(self, branch):
@@ -50,17 +45,11 @@ class project:
 
     # Return the status of the project
     def status(self):
-        if not hasattr(self, 'st'):
-            self.st = self.get_scm().status()
-
-        return self.st
+        return self.get_scm().status()
 
     # Return the status of a submodule
     def submodule_status(self, sub):
-        if sub not in self.sub_status:
-            self.sub_status[sub] = self.get_scm().submodule_status(sub)
-
-        return self.sub_status[sub]
+        return self.get_scm().submodule_status(sub)
 
     def print_status(self):
         self.get_scm().print_status()
@@ -72,10 +61,7 @@ class project:
         return self.get_scm().branches()
 
     def subprojects(self):
-        if not hasattr(self, 'sub'):
-            self.sub = self.get_scm().subprojects()
-
-        return self.sub
+        return self.get_scm().subprojects()
 
     def fetch(self, remote):
         self.get_scm().fetch(remote)
@@ -99,6 +85,7 @@ class project:
             for p in self.subprojects():
                 self.submodule_status(p)
 
+        self.branches()
         self.status()
 
 

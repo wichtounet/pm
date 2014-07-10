@@ -5,6 +5,7 @@ import os
 
 from pm.console import green_print, red_print
 from pm.scm.base import subproject
+from pm.memoized import memoized
 
 
 class submodule:
@@ -74,6 +75,7 @@ class Git:
     def remotes(self):
         return self.remotes_f(self.folder())
 
+    @memoized
     def subprojects(self):
         command = ["git", "-C", self.folder(), "submodule", "status",
                    "--recursive"]
@@ -118,6 +120,8 @@ class Git:
 
         return subprojects
 
+    # Return the current branch
+    @memoized
     def branch(self):
         command = ["git", "-C", self.folder(), "branch"]
 
@@ -155,6 +159,7 @@ class Git:
         return self.hash_f(self.folder(), o)
 
     # Return the porcelain status of the project
+    @memoized
     def status(self):
         command = ["git", "-C", self.folder(), "status",
                    "--porcelain", "--branch"]
@@ -196,6 +201,7 @@ class Git:
             green_print("Clean")
 
     # Return the porcelain status of a submodule project
+    @memoized
     def submodule_status(self, sub):
         path = self.sub_folder(sub)
 
@@ -285,6 +291,7 @@ class Git:
         if clean:
             green_print("Clean")
 
+    @memoized
     def branches(self):
         command = ["git", "-C", self.folder(), "branch"]
 
