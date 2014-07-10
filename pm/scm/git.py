@@ -24,6 +24,8 @@ def to_subproject(sm, parent=None):
 
     return p
 
+def exec_command(command):
+    return subprocess.check_output(command, universal_newlines=True)
 
 class Git:
     def __init__(self, project):
@@ -35,7 +37,7 @@ class Git:
     def fetch(self, remote):
         command = ["git", "-C", self.folder(), "fetch", "--quiet", remote]
 
-        subprocess.check_output(command)
+        exec_command(command)
 
     def sub_folder(self, sub):
         parts = []
@@ -60,12 +62,12 @@ class Git:
         for remote in self.remotes_f(path):
             command = ["git", "-C", path, "fetch", "--quiet", remote]
 
-            subprocess.check_output(command)
+            exec_command(command)
 
     def remotes_f(self, folder):
         command = ["git", "-C", folder, "remote"]
 
-        remotes = subprocess.check_output(command)
+        remotes = exec_command(command)
 
         return remotes.splitlines()
 
@@ -76,7 +78,7 @@ class Git:
         command = ["git", "-C", self.folder(), "submodule", "status",
                    "--recursive"]
 
-        output = subprocess.check_output(command)
+        output = exec_command(command)
 
         if not output:
             return []
@@ -119,7 +121,7 @@ class Git:
     def branch(self):
         command = ["git", "-C", self.folder(), "branch"]
 
-        branches = subprocess.check_output(command)
+        branches = exec_command(command)
 
         for b in branches.splitlines():
             if "*" in b:
@@ -132,7 +134,7 @@ class Git:
     def remote_branch_exist_f(self, folder, branch):
         command = ["git", "-C", folder, "branch", "-a"]
 
-        result = subprocess.check_output(command)
+        result = exec_command(command)
 
         remote_branch = "remotes/" + branch
 
@@ -146,7 +148,7 @@ class Git:
     def hash_f(self, folder, o):
         command = ["git", "-C", folder, "rev-parse", "--verify", o]
 
-        return subprocess.check_output(command).splitlines()[0]
+        return exec_command(command).splitlines()[0]
 
     # Return the hash of the given object
     def hash(self, o):
@@ -157,7 +159,7 @@ class Git:
         command = ["git", "-C", self.folder(), "status",
                    "--porcelain", "--branch"]
 
-        status = subprocess.check_output(command)
+        status = exec_command(command)
 
         return status
 
@@ -199,7 +201,7 @@ class Git:
 
         command = ["git", "-C", path, "status", "--porcelain", "--branch"]
 
-        status = subprocess.check_output(command)
+        status = exec_command(command)
 
         return status
 
@@ -207,10 +209,10 @@ class Git:
         command = ["git", "-C", path, "for-each-ref",
                 "--format='%(objectname) %(refname:short)'", "refs"]
 
-        ref_branches = subprocess.check_output(command).splitlines()
+        ref_branches = exec_command(command).splitlines()
 
         command = ["git", "-C", path, "show-ref", "-s", "--", "HEAD"]
-        current_commit = subprocess.check_output(command).splitlines()[0]
+        current_commit = exec_command(command).splitlines()[0]
 
         branch_name = ""
 
@@ -286,7 +288,7 @@ class Git:
     def branches(self):
         command = ["git", "-C", self.folder(), "branch"]
 
-        res = subprocess.check_output(command)
+        res = exec_command(command)
 
         branches = []
 
