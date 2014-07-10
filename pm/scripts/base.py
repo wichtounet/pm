@@ -83,6 +83,9 @@ def status(args=None):
             if args.parallel_fetch:
                 p.fetch_all()
 
+                if args.submodule:
+                    p.fetch_submodules()
+
         for p in projects:
             pool.apply_async(worker, (p,))
 
@@ -92,6 +95,9 @@ def status(args=None):
     if args.fetch and not (args.j and args.parallel_fetch):
         for p in projects:
             p.fetch_all()
+
+            if args.submodule:
+                p.fetch_submodules()
 
     if args.fetch:
         print("Fetch done")

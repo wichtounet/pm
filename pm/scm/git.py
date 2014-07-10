@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import subprocess
+import os
 
 from pm.console import green_print, red_print
 from pm.scm.base import subproject
@@ -12,13 +13,14 @@ class submodule:
         self.subs = dict()
 
 
-def to_subproject(sm):
+def to_subproject(sm, parent=None):
     p = subproject(sm.name)
+    p.parent = parent
 
     for key in sm.subs:
         m = sm.subs[key]
 
-        p.subs.append(to_subproject(m))
+        p.subs.append(to_subproject(m, p))
 
     return p
 
@@ -33,14 +35,37 @@ class Git:
     def fetch(self, remote):
         command = ["git", "-C", self.folder(), "fetch", "--quiet", remote]
 
-        subprocess.check_output(command)
+        #subprocess.check_output(command)
 
-    def remotes(self):
-        command = ["git", "-C", self.folder(), "remote"]
+    def fetch_sub(self, sub):
+        parts = []
+
+        while sub.parent is not None:
+            parts.append(sub.name)
+
+            sub = sub.parent
+
+        parts.append(sub.name)
+
+        path = self.folder()
+
+        for part in reversed(parts):
+            path = os.path.join(path, part)
+
+        for remote in self.remotes_f(path):
+            command = ["git", "-C", path, "fetch", "--quiet", remote]
+
+            subprocess.check_output(command)
+
+    def remotes_f(self, folder):
+        command = ["git", "-C", folder, "remote"]
 
         remotes = subprocess.check_output(command)
 
         return remotes.splitlines()
+
+    def remotes(self):
+        return self.remotes_f(self.folder())
 
     def subprojects(self):
         command = ["git", "-C", self.folder(), "submodule", "status",

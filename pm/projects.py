@@ -72,6 +72,16 @@ class project:
         for remote in self.remotes():
             self.fetch(remote)
 
+    def fetch_submodule(self, p):
+        self.get_scm().fetch_sub(p)
+
+        for sp in p.subs:
+            self.fetch_submodule(sp)
+
+    def fetch_submodules(self):
+        for p in self.subprojects():
+            self.fetch_submodule(p)
+
     def cache(self, submodule):
         if submodule:
             self.subprojects()
