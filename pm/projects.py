@@ -65,8 +65,8 @@ class project:
 
         return self.sub
 
-    def fetch(self, branch):
-        self.get_scm().fetch(branch)
+    def fetch(self, remote):
+        self.get_scm().fetch(remote)
 
     def fetch_all(self):
         for remote in self.remotes():

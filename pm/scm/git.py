@@ -30,8 +30,8 @@ class Git:
     def folder(self):
         return self.project.folder
 
-    def fetch(self, branch):
-        command = ["git", "-C", self.folder(), "fetch", "--quiet", branch]
+    def fetch(self, remote):
+        command = ["git", "-C", self.folder(), "fetch", "--quiet", remote]
 
         subprocess.check_output(command)
 
