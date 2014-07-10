@@ -55,11 +55,14 @@ def build_parser():
     return parser
 
 
-def print_subproject(sp, padder):
+def print_subproject(project, sp, padder):
     blue_print("    {0}-> {1:<30s}".format(padder, sp.name))
+
+    project.print_submodule_status(sp)
+
     print()
     for ssp in sp.subs:
-        print_subproject(ssp, padder + "  ")
+        print_subproject(project, ssp, padder + "  ")
 
 
 def status(args=None):
@@ -115,7 +118,7 @@ def status(args=None):
 
         if args.submodule:
             for sub in p.subprojects():
-                print_subproject(sub, " ")
+                print_subproject(p, sub, " ")
 
         for branch in p.branches():
             if branch == p.branch():

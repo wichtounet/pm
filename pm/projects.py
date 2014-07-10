@@ -14,6 +14,8 @@ class project:
     scm = None
     scm_i = None
 
+    sub_status = dict()
+
     def __init__(self, folder, scm=None):
         self.folder = folder
         self.scm = scm
@@ -53,8 +55,18 @@ class project:
 
         return self.st
 
+    # Return the status of a submodule
+    def submodule_status(self, sub):
+        if sub not in self.sub_status:
+            self.sub_status[sub] = self.get_scm().submodule_status(sub)
+
+        return self.sub_status[sub]
+
     def print_status(self):
         self.get_scm().print_status()
+
+    def print_submodule_status(self, sub):
+        self.get_scm().print_submodule_status(sub)
 
     def branches(self):
         return self.get_scm().branches()

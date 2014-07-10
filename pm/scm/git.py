@@ -35,9 +35,9 @@ class Git:
     def fetch(self, remote):
         command = ["git", "-C", self.folder(), "fetch", "--quiet", remote]
 
-        #subprocess.check_output(command)
+        subprocess.check_output(command)
 
-    def fetch_sub(self, sub):
+    def sub_folder(self, sub):
         parts = []
 
         while sub.parent is not None:
@@ -51,6 +51,11 @@ class Git:
 
         for part in reversed(parts):
             path = os.path.join(path, part)
+
+        return path;
+
+    def fetch_sub(self, sub):
+        path = self.sub_folder(sub)
 
         for remote in self.remotes_f(path):
             command = ["git", "-C", path, "fetch", "--quiet", remote]
@@ -155,8 +160,57 @@ class Git:
 
         clean = True
 
-        if " M " in status:
+        if " M " in status or " D " in status:
             red_print("Uncommitted changes")
+            clean = False
+
+        if "ahead" in branch_line and "behind" in branch_line:
+            if not clean:
+                print(" - ", end="")
+            red_print("Diverged with remote")
+            clean = False
+
+        elif " [ahead" in branch_line:
+            if not clean:
+                print(" - ", end="")
+            red_print("Ahead of remote")
+            clean = False
+
+        elif " [behind" in branch_line:
+            if not clean:
+                print(" - ", end="")
+            red_print("Behind remote")
+            clean = False
+
+        if clean:
+            green_print("Clean")
+
+    # Return the porcelain status of a submodule project
+    def submodule_status(self, sub):
+        path = self.sub_folder(sub)
+
+        command = ["git", "-C", path, "status", "--porcelain", "--branch"]
+
+        status = subprocess.check_output(command)
+
+        return status
+
+    def print_submodule_status(self, sub):
+        status = self.project.submodule_status(sub)
+
+        branch_line = status.splitlines()[0]
+
+        clean = True
+
+        if " M " in status or " D " in status:
+            red_print("Uncommitted changes")
+            clean = False
+
+        if "(no branch)" in branch_line:
+            if not clean:
+                print(" - ", end="")
+
+            red_print("Not on a branch")
             clean = False
 
         if "ahead" in branch_line and "behind" in branch_line:
