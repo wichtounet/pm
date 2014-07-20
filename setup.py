@@ -38,7 +38,7 @@ class InstallCommand(install):
 setup(
         name='pm',
         version='0.1',
-        description='Command-line utility to mange development projects',
+        description='Command-line utility to manage development projects',
         author='Baptiste Wicht',
         author_email='baptiste.wicht@gmail.com',
         url='https://github.com/wichtounet/pm',
