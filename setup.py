@@ -1,3 +1,10 @@
+#=======================================================================
+# Copyright (c) 2014 Baptiste Wicht
+# Distributed under the terms of the MIT License.
+# (See accompanying file LICENSE or copy at
+#  http://opensource.org/licenses/MIT)
+#=======================================================================
+
 import os
 
 from setuptools import setup, find_packages
@@ -17,7 +24,7 @@ def friendly(command_subclass):
         orig_run(self)
         print("")
         print("=======================================================")
-        print("To make full use of this program, you should install the"
+        print("To use the pcd command, you should add the"
               "following function in your shell (bash or zsh):")
         print("function pcd { dir=`pcdi $1` ; if (( $? == 0 )) ; "
               "then cd $dir; fi ; }")
@@ -38,7 +45,7 @@ class InstallCommand(install):
 setup(
         name='pm',
         version='0.1',
-        description='Command-line utility to mange development projects',
+        description='Command-line utility to manage development projects',
         author='Baptiste Wicht',
         author_email='baptiste.wicht@gmail.com',
         url='https://github.com/wichtounet/pm',
