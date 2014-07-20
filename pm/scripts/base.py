@@ -149,7 +149,7 @@ def status(args=None):
 
 
 def ls(args=None):
-    if not args.non_git_only:
+    if not args.non_scm_only:
         projects = list_projects(args.all, args.dir)
     else:
         all = list_projects(True, args.dir)
