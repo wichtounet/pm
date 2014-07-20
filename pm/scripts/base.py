@@ -59,6 +59,13 @@ def build_parser():
                               help=('Look for projects in ~/dir'
                                     ' or dir if absolute'))
 
+    parser_update = subparsers.add_parser('update', help='Update all projects')
+    parser_update.set_defaults(func=update)
+    parser_update.add_argument("-j", type=int, help="Use J threads")
+    parser_update.add_argument('dir', nargs='?',
+                              help=('Look for projects in ~/dir'
+                                    ' or dir if absolute'))
+
     return parser
 
 
@@ -192,6 +199,15 @@ def fetch(args=None):
             p.fetch_all()
 
     print("Fetch done")
+
+def update(args=None):
+    projects = list_projects(False, args.dir)
+
+    print("Update in progres...")
+
+    # TODO
+
+    print("Update done")
 
 
 def main(args=None):
