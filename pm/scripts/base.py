@@ -56,8 +56,8 @@ def build_parser():
     parser_fetch.set_defaults(func=fetch)
     parser_fetch.add_argument("-j", type=int, help="Use J threads")
     parser_fetch.add_argument('dir', nargs='?',
-                               help=('Look for projects in ~/dir'
-                                     ' or dir if absolute'))
+                              help=('Look for projects in ~/dir'
+                                    ' or dir if absolute'))
 
     return parser
 
