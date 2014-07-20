@@ -170,6 +170,20 @@ class Git:
 
         return status
 
+    def has_diverged(self):
+        status = self.project.status()
+
+        branch_line = status.splitlines()[0]
+
+        return "ahead" in branch_line and "behind" in branch_line
+
+    def is_behind(self):
+        status = self.project.status()
+
+        branch_line = status.splitlines()[0]
+
+        return not self.has_diverged() and "behind" in branch_line
+
     def print_status(self):
         status = self.project.status()
 

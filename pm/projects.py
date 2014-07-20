@@ -52,6 +52,9 @@ class project:
     def submodule_status(self, sub):
         return self.get_scm().submodule_status(sub)
 
+    def is_behind(self):
+        return self.get_scm().is_behind()
+
     def print_status(self):
         self.get_scm().print_status()
 
