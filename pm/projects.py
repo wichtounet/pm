@@ -67,6 +67,9 @@ class project:
     def subprojects(self):
         return self.get_scm().subprojects()
 
+    def update(self):
+        self.get_scm().update()
+
     def fetch(self, remote):
         self.get_scm().fetch(remote)
 

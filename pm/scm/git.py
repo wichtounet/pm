@@ -37,6 +37,11 @@ class Git:
     def folder(self):
         return self.project.folder
 
+    def update(self):
+        command = ["git", "-C", self.folder(), "pull"]
+
+        exec_command(command)
+
     def fetch(self, remote):
         command = ["git", "-C", self.folder(), "fetch", "--quiet", remote]
 

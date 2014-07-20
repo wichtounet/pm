@@ -200,12 +200,30 @@ def fetch(args=None):
 
     print("Fetch done")
 
+
 def update(args=None):
     projects = list_projects(False, args.dir)
 
-    print("Update in progres...")
+    print("Update in progress...")
 
-    # TODO
+    if args.j:
+        pool = Pool(args.j)
+
+        def worker(p):
+            if p.is_behind():
+                p.update()
+                print("{} updated".format(p.name))
+
+        for p in projects:
+            pool.apply_async(worker, (p,))
+
+        pool.close()
+        pool.join()
+    else:
+        for p in projects:
+            if p.is_behind():
+                p.update()
+                print("{} updated".format(p.name))
 
     print("Update done")
 
