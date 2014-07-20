@@ -1,4 +1,4 @@
-pm 0.0.1
+pm 0.1
 ========
 
 Simple project manager in Python. This application helps you keeping track of the status of your projects in their Source Code Management (SCM) system. 
