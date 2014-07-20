@@ -1,4 +1,4 @@
-pm 0.1
+pm 0.1.1
 ========
 
 Simple project manager in Python. This application helps you keeping track of

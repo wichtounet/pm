@@ -38,12 +38,12 @@ class InstallCommand(install):
 
 setup(
         name='pm',
-        version='0.1',
+        version='0.1.1',
         description='Command-line utility to manage development projects',
         author='Baptiste Wicht',
         author_email='baptiste.wicht@gmail.com',
         url='https://github.com/wichtounet/pm',
-        download_url='https://github.com/wichtounet/pm/tarball/0.1',
+        download_url='https://github.com/wichtounet/pm/tarball/0.1.1',
         license='MIT',
         packages=find_packages(),
         package_dir = {'pm': 'pm'},
