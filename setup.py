@@ -11,12 +11,6 @@ from setuptools import setup, find_packages
 from setuptools.command.install import install
 from setuptools.command.develop import develop
 
-def read(filename):
-    try:
-        return open(os.path.join(os.path.dirname(__file__), filename)).read()
-    except:
-        raise
-
 def friendly(command_subclass):
     orig_run = command_subclass.run
 
@@ -53,7 +47,12 @@ setup(
         license='MIT',
         packages=find_packages(),
         package_dir = {'pm': 'pm'},
-        entry_points = read('entry-points.ini'),
+        entry_points = {
+            'console_scripts': [
+                'pcdi = pm.scripts.pcd:main',
+                'pm = pm.scripts.base:main',
+                ]
+        },
         cmdclass={
             'install': InstallCommand,
             'develop': DevelopCommand,
