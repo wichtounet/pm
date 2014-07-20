@@ -17,7 +17,7 @@ def friendly(command_subclass):
         orig_run(self)
         print("")
         print("=======================================================")
-        print("To make full use of this program, you should install the"
+        print("To use the pcd command, you should add the"
               "following function in your shell (bash or zsh):")
         print("function pcd { dir=`pcdi $1` ; if (( $? == 0 )) ; "
               "then cd $dir; fi ; }")
