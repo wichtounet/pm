@@ -52,6 +52,13 @@ def build_parser():
                         action='store_true',
                         help='Show only non versioned projects')
 
+    parser_fetch = subparsers.add_parser('fetch', help='Fetch all projects')
+    parser_fetch.set_defaults(func=fetch)
+    parser_fetch.add_argument("-j", type=int, help="Use J threads")
+    parser_fetch.add_argument('dir', nargs='?',
+                               help=('Look for projects in ~/dir'
+                                     ' or dir if absolute'))
+
     return parser
 
 
@@ -162,6 +169,29 @@ def ls(args=None):
 
     print("")
     print("{} projects".format(len(projects)))
+
+
+def fetch(args=None):
+    projects = list_projects(False, args.dir)
+
+    print("Fetch in progres...")
+
+    if args.j:
+        pool = Pool(args.j)
+
+        def worker(p):
+            p.fetch_all()
+
+        for p in projects:
+            pool.apply_async(worker, (p,))
+
+        pool.close()
+        pool.join()
+    else:
+        for p in projects:
+            p.fetch_all()
+
+    print("Fetch done")
 
 
 def main(args=None):
