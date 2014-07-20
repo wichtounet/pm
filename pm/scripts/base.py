@@ -63,8 +63,8 @@ def build_parser():
     parser_update.set_defaults(func=update)
     parser_update.add_argument("-j", type=int, help="Use J threads")
     parser_update.add_argument('dir', nargs='?',
-                              help=('Look for projects in ~/dir'
-                                    ' or dir if absolute'))
+                               help=('Look for projects in ~/dir'
+                                     ' or dir if absolute'))
 
     return parser
 
